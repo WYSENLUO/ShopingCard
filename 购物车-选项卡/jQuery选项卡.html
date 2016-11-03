@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
+		<style>
+			.container{
+				width: 500px;
+				height: 300px;
+				background-color: darkcyan;
+				position: relative; 
+			}
+			
+			.tab-container{
+				width: 100%;
+				height: 40px;
+				background-color: darkgreen;
+				position: absolute;
+				top:0px;
+			}
+			
+			.tab-list{
+				display: inline;
+				list-style: none;
+			}
+			
+			.tab-item{
+				float: left;
+				width: 100px;
+				text-align: center;
+				color: #FFFFFF;
+				font-size: 13px;
+				line-height: 40px;
+			}
+			
+			/* 追加一个样式，作为活动的元素*/
+			.tab-list .active{
+				background-color:#FFD700;
+			}
+			
+			.panel-container{
+				width: 100%;
+				height: 260px;
+				background-color: gold;
+				position: absolute;
+				bottom: 0px;
+			}
+			.panel-list{
+				list-style: none;
+				display: inline;
+				padding:0px;
+			}
+			
+			.panel-item{
+				width: 100%;
+				height: 260px;
+				background-color: #FFD700;
+				display: none;
+			}
+			
+			.panel-item.active{
+				display: block;
+			}
+		</style>
+	
+		<script>
+			$(document).ready(function(){
+				$(".tab-item").hover(function(){
+					$(this).addClass("active").siblings().removeClass("active");
+					
+					//隐藏其他面板
+					$(".panel-item").hide();
+					$(".panel-item").eq($(this).index()).show();
+				})
+			})
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div class="tab-container">
+				<ul class="tab-list">
+					<li class="tab-item active">选项一</li>
+					<li class="tab-item">选项二</li>
+					<li class="tab-item">选项三</li>
+					<li class="tab-item">选项四</li>
+				</ul>
+			</div>
+			<div class="panel-container">
+				<div class="panel-item active" >内容一</div>
+				<div class="panel-item">内容二</div>
+				<div class="panel-item">内容三</div>
+				<div class="panel-item">内容四</div>
+			</div>
+		</div>
+	</body>
+</html>

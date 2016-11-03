@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<link href="css/bootstrap.min.css"  rel="stylesheet" type="text/css"/>
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+		<title></title>
+		<style>
+			#tab-container{
+				
+				margin-top: 50px;
+				border: 1px solid slategray;
+				width: 940px;
+				padding-left: 20px;
+				margin: 0px auto;
+			}
+			.gray{
+				color: #C0C0C0;
+				font-size:12px;
+			}
+			#nav{
+				
+				background-color: #E7E7E7;
+				height: 30px;
+				line-height: 30px;
+				border-radius: 5px;
+				margin-bottom: 10px;
+				
+			}
+			#nav table{font-size: 12px; color: #5E5E5E;}
+			#tab2{ width:900px; border:1px solid #E1EDF7;}
+			#tab2 tr:nth-child(even){ background-color:#F9F2F4}
+			.red{ color: red; font-size: 22px; border-width: inherit;}
+			hr{ margin: 2px;}
+			#tab3{margin-left: 700px; font-size: 12px; }
+			#tab4{ margin-bottom: 20px; margin-top:10px;}
+			#resect{ background-color: #DFF0D8; border: 1px solid whitesmoke; width: 110px; height: 35px;
+			color: #777777;}
+			#shopping{background-color:#5CB85C; border: 1px solid #5CB85C; width: 110px; height: 35px;
+			color:white; font-size: 14px; font-weight: bold;}
+			#settle{background-color:#C9302C;border: 1px solid #C9302C; width: 110px; height: 35px;
+			color:white; font-size: 14px; font-weight: bold; margin-left: 10px;}
+			#attention{width: 550px;}
+			.add{background-color:#C0C0C0; border: 1px solid #C0C0C0;}
+		</style>
+		
+		<script>
+			$(document).ready(function(){
+				$.ajax({
+					type:"get",
+					url:"json/catalog.json",
+					async:true,
+					success:function(data,textStatus){
+						var arr=eval(data);
+						var tab=$("#tab2 tbody");
+					
+						for(var i=0;i<arr.length;i++){
+							var tr=$("<tr></tr>");//创建一行
+							var td1=$("<td></td>"); //第一列
+							td1.html("<img src="+arr[i].src+">");
+							tr.append(td1);
+							td1.css("width","100px")
+							
+							var td2=$("<td></td>"); //第二列
+							td2.text(arr[i].pname);
+							td2.css("width","200px")
+							tr.append(td2);
+							
+							var td3=$("<td></td>"); //第三列
+							var bt1=$("<button class='add1' >+</button>");
+							var bt2=$("<button class='mins'>-</button>");
+							bt1.css({"background-color":"#C0C0C0","border":"1px solid #C0C0C0","height":"26px"});
+							bt2.css({"background-color":"#C0C0C0","border":"1px solid #C0C0C0","height":"26px"});
+							var num=$("<input type='text' value='1' class='num' />");
+							num.css("text-align","center")
+							num.css("width","20px");
+							td3.append(bt1);
+							td3.append(num);
+							td3.append(bt2);
+							tr.append(td3);
+								
+							var td4=$("<td></td>"); //单价
+							td4.html("<span class='price'>"+arr[i].price+"</span>");
+							tr.append(td4);
+							tab.append(tr);
+							
+							var td5=$("<td></td>"); //金额
+							td5.html("<span class='res'>"+arr[i].price+"</span>");
+							tr.append(td5);
+							tab.append(tr);
+							
+							var td6=$("<td></td>"); //优惠
+							td6.html("<span class='preferential'>"+arr[i].preferential+"</span>");
+							tr.append(td6);
+							tab.append(tr);
+							price=parseInt(arr[i].price.substring(1)); //截取价格
+							preferential=parseInt(arr[i].preferential.substring(1)); //截取优惠
+							priceFina=price-preferential;
+							var td6=$("<td></td>"); //实付
+							td6.html("<span class='result'>"+"¥"+priceFina+"</span>");
+							tr.append(td6);
+							tab.append(tr);
+							
+							var td6=$("<td></td>"); //删除
+							td6.html("<a href='#' class='del'>删除</a>");
+							tr.append(td6);
+							tab.append(tr);
+							
+						}
+						
+						/*$(".add1").click(function(){
+						alert("绑上了");
+					})*/
+					
+					}//-----ajax---->
+					
+				});
+			//加法
+				$("#tab2").on("click",".add1",function(){
+					var a=$(this).next().val();
+					a++;
+					$(this).next().val(a);
+					var price=$(this).parent().parent().find(".price").text();//单价
+					price=parseInt(price.substring(1)); //截取价格 
+					
+					var preferential=$(this).parent().parent().find(".preferential").text();//优惠
+					preferential=parseInt(preferential.substring(1)); //截取优惠
+					
+					
+					price=a*price
+					$(this).parent().parent().find(".res").text("¥"+price);//金额
+					if(a>0){
+					preferential=price-preferential;// 优惠后
+					}else{
+						preferential=0;
+					}
+					$(this).parent().parent().find(".result").text("¥"+preferential);//实额
+					var sum=sum1();
+					$(".money").html("¥"+sum);
+					atten();
+					
+				})
+				
+				//减法
+				$("#tab2").on("click",".mins",function(){
+					var a=$(this).prev().val();
+					if(a>0){
+						a--;
+					}else{
+						a=0;
+					}
+					
+					$(this).prev().val(a);
+					var price=$(this).parent().parent().find(".price").text();//单价
+					price=parseInt(price.substring(1)); //截取价格 
+					
+					var preferential=$(this).parent().parent().find(".preferential").text();//优惠
+					preferential=parseInt(preferential.substring(1)); //截取优惠
+					
+					
+					price=a*price
+					$(this).parent().parent().find(".res").text("¥"+price);//金额
+					if(a>0){
+					preferential=price-preferential;// 优惠后
+					}else{
+						preferential=0;
+					}
+					$(this).parent().parent().find(".result").text("¥"+preferential);//实额
+					var sum=sum1();
+					$(".money").html("¥"+sum);
+					atten();
+				})
+				
+				//删除
+				$("#tab2").on("click","a",function(){
+					$(this).parent().parent().remove();
+					var sum=sum1();
+					$(".money").html("¥"+sum);
+					atten();
+					count1();
+				})
+				
+				$("#resect").click(function(){
+					$("#tab2").remove();
+					var sum=sum1();
+					$(".money").html("¥"+sum);
+				})
+				
+				setTimeout(count1,1000);
+				
+			});
+			
+			//获取商品数量
+			function count1(){
+				var tr=$("#tab2 tbody tr");
+				tr=parseInt(tr.length);
+				$("#count").html("共"+tr+"件");
+				return tr;
+			}
+			
+			function sum1(){
+			//获取商品总金额
+			var num=0;
+				var tr=$("#tab2 tbody tr");
+				for(var i=0;i<tr.length;i++){
+					var money=tr.eq(i).find(".result").text();
+					money=money.substring(1);
+					money=parseInt(money);
+					num+=money;
+				}
+				return num;
+				
+			}
+			//提示
+			function atten(){
+				var cost=sum1();
+				var a=$("#attention span");
+				if(cost>=2011){
+					a.text(" *注：您购物满2011元，去结算即可参与“1元换购”活动，加1元可换购176元得胜科声监听耳机");
+					a.css({"color":"red","fontSize":"12px"});
+				}else if(cost<2011){
+					a.text("");
+				}
+			}
+
+		</script>
+	</head>
+	<body>
+		<div class="container">
+			<div  id="tab-container">
+				<div id="con_h">
+					<table width="101%">
+						<tr>
+							<td width="128"><h4>我购买的商品 </h4></td>
+							<td width="370"><span class="gray" id="count">共3件</span></td>
+							<td width="180" class="gray">商品价格和库存请以订单提交时为准</td>
+						</tr>
+					</table>
+					<!----------------------->
+					<div><!---2-->
+						<div id="nav">
+							<table>
+								<tr align="middle">
+									<td width="200px">商品名称</td>
+									<td width="150px" align="right">数量</td>
+									<td width="120px" align="right">单价</td>
+									<td width="100px" align="right">金额</td>
+									<td width="90px" align="right">优惠</td>
+									<td  width="90px" align="right">实额</td>
+									<td width="90px" align="right">操作</td>
+								</tr>
+							</table>
+							<!--<div class="col-md-2">商品名称</div>
+							<div class="col-md-1 col-md-push-2">数量</div>
+							<div class="col-md-1 col-md-push-3">单价</div>
+							<div class="col-md-1 col-md-push-3">金额</div>
+							<div class="col-md-1 col-md-push-3">优惠</div>
+							<div class="col-md-1 col-md-push-3">实额</div>
+							<div class="col-md-1 col-md-push-3">操作</div>-->
+						</div><!--nav-->
+						<h5>下列商品由音平商城配送  <span class="gray"> 支持货到付款</span></h5>
+						<table class="table-striped table" id="tab2">
+							<tbody>
+								
+							</tbody>
+						</table>
+					</div><!---------2-->
+				</div><!-----con_h---->
+				<div id="jiesuan">
+					<hr/>
+					<table id="tab3">
+						<tbody>
+							<tr>
+								<td>商品金额：</td>
+								<td colspan="2"><span class="money">¥0.00</span></td>
+							</tr>
+							<tr>
+								<td>商品金额总计</td>
+								<td>(不包含运费) </td>
+								<td><span class="money red">  ¥0.00</span></td>
+							</tr>
+						</tbody>
+					</table>
+					<hr />
+					
+					<table id="tab4">
+						<tbody>
+							<tr>
+								<td><button id="resect">清空购物车</button></td>
+								<td id="attention"><span></span></span></td>
+								<td><button id="shopping"><<继续购物</button></td>
+								<td><button id="settle">¥去结算>></button></td>
+							</tr>
+						</tbody>
+					</table>
+				</div><!----结算------>
+			</div><!--tab-contaioner-->
+		</div>
+	</body>
+</html>

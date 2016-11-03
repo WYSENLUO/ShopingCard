@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		<script src="js/jquery-3.1.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+	</head>
+	<style>
+		#tab-container{
+			position: relative;
+			background-color: #63CBCE;
+			border-radius: 5px;
+			height: 50px;
+			margin-top:100px;
+			
+		}
+		#tab-container div{
+			text-align: center;
+			height:50px; 
+			line-height:50px; 
+			color: white;
+			font-size: 14px;;
+		}
+		.active{
+			background-color:#FFCB63;
+			
+		}
+	</style>
+	<script>
+		$(document).ready(function(){
+			$("#tab-container>div").hover(function(){
+				$(this).addClass("active").siblings().removeClass("active");
+			})
+		})
+	</script>
+	<body>
+		<div class="container">
+			<div class="col-xs-8 col-xs-push-2 " id="tab-container">
+				<div class="col-xs-2 active">首页</div>
+				<div class="col-xs-2">HTML教程</div>
+				<div class="col-xs-2">CSS基础</div>
+				<div class="col-xs-2">CSS开发工具</div>
+				<div class="col-xs-2">CSS特效</div>
+				<div class="col-xs-2">CSS问题</div>
+			</div>
+		</div>
+	</body>
+</html>
